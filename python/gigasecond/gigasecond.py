@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 
 
 def add(birth_date, seconds_to_add=10**9):
@@ -6,4 +6,4 @@ def add(birth_date, seconds_to_add=10**9):
 
 
 if __name__ == "__main__":
-    print(f"{add(datetime(1979, 10, 18))=}")
+    print(f"{add(datetime(1977, 11, 8))=}")
