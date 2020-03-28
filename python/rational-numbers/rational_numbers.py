@@ -1,12 +1,12 @@
 class Rational(object):
-    def __init__(self, numer, denom):
-        g = self.gcd(numer, denom)
-        if denom < 0:
-            self.numer = -1 * numer // g
-            self.denom = abs(denom) // g
+    def __init__(self, numerator, denominator):
+        g = self.gcd(numerator, denominator)
+        if denominator < 0:
+            self.numerator = -1 * numerator // g
+            self.denominator = abs(denominator) // g
         else:
-            self.numer = numer // g
-            self.denom = denom // g
+            self.numerator = numerator // g
+            self.denominator = denominator // g
 
     def gcd(self, a, b):
         for i in range(min(abs(a), abs(b)), 1, -1):
@@ -15,43 +15,45 @@ class Rational(object):
         return 1
 
     def __eq__(self, other):
-        if not isinstance(self, Rational) or not isinstance(other, Rational):
+        if not isinstance(self, Rational):
             return False
-        if self.numer == 0 and other.numer == 0:
+        if not isinstance(other, Rational):
+            return False
+        if self.numerator == 0 and other.numerator == 0:
             return True
-        return self.numer == other.numer and self.denom == other.denom
+        return self.numerator == other.numerator and self.denominator == other.denominator
 
     def __repr__(self):
-        return f'{self.numer}/{self.denom}'
+        return f'{self.numerator}/{self.denominator}'
 
     def __add__(self, other):
-        res_numer = self.numer * other.denom + other.numer * self.denom
-        res_denom = self.denom * other.denom
+        res_numer = self.numerator * other.denominator + other.numerator * self.denominator
+        res_denom = self.denominator * other.denominator
         return Rational(res_numer, res_denom)
 
     def __sub__(self, other):
-        res_numer = self.numer * other.denom - other.numer * self.denom
-        res_denom = self.denom * other.denom
+        res_numer = self.numerator * other.denominator - other.numerator * self.denominator
+        res_denom = self.denominator * other.denominator
         return Rational(res_numer, res_denom)
 
     def __mul__(self, other):
-        res_numer = self.numer * other.numer
-        res_denom = self.denom * other.denom
+        res_numer = self.numerator * other.numerator
+        res_denom = self.denominator * other.denominator
         return Rational(res_numer, res_denom)
 
     def __truediv__(self, other):
-        res_numer = self.numer * other.denom
-        res_denom = self.denom * other.numer
+        res_numer = self.numerator * other.denominator
+        res_denom = self.denominator * other.numerator
         return Rational(res_numer, res_denom)
 
     def __abs__(self):
-        return Rational(abs(self.numer), abs(self.denom))
+        return Rational(abs(self.numerator), abs(self.denominator))
 
     def __pow__(self, power):
-        return Rational(self.numer ** power, self.denom ** power)
+        return Rational(self.numerator ** power, self.denominator ** power)
 
     def __rpow__(self, base):
-        return base ** (self.numer / self.denom)
+        return base ** (self.numerator / self.denominator)
 
 
 if __name__ == '__main__':
