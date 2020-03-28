@@ -1,53 +1,53 @@
+from enum import Enum
 from threading import Lock
 
 
 class BankAccount:
+    State = Enum("State", ("new", "open", "closed"))
+
     def __init__(self):
-        self.balance = 0
-        self.is_open = None
-        self.is_closed = None
-        self.__lock = Lock()
+        self._balance = 0
+        self._state = BankAccount.State.new
+        self._lock = Lock()
 
     def get_balance(self):
-        with self.__lock:
-            if self.is_closed:
+        with self._lock:
+            if self._state == BankAccount.State.closed:
                 raise ValueError(f"Can't get balance of a closed account.")
-            return self.balance
+            return self._balance
 
     def open(self):
-        with self.__lock:
-            if self.is_open:
+        with self._lock:
+            if self._state == BankAccount.State.open:
                 raise ValueError(f"Can't open already opened account.")
-            self.is_open = True
-            self.is_closed = False
+            self._state = BankAccount.State.open
 
     def deposit(self, amount):
-        with self.__lock:
+        with self._lock:
             if amount < 0:
                 raise ValueError(f"Can't deposit negative amount: {amount}.")
-            if self.is_closed:
-                raise ValueError(f"Can't deposit to a closed acocunt.")
-            self.balance += amount
+            if self._state == BankAccount.State.closed:
+                raise ValueError(f"Can't deposit to a closed accocunt.")
+            self._balance += amount
 
     def withdraw(self, amount):
-        with self.__lock:
+        with self._lock:
             if amount < 0:
                 raise ValueError(f"Can't withdraw negative amount: {amount}.")
-            if self.is_closed:
+            if self._state == BankAccount.State.closed:
                 raise ValueError(f"Can't withdraw from a closed acocunt.")
-            if amount > self.get_balance():
+            if amount > self._balance:
                 raise ValueError(f"Can't withdraw more than current balance.")
-            self.balance -= amount
+            self._balance -= amount
 
     def close(self):
-        with self.__lock:
-            if self.is_closed:
+        with self._lock:
+            if self._state == BankAccount.State.closed:
                 raise ValueError(f"Can't close already closed account.")
-            if not self.is_open:
+            if self._state == BankAccount.State.new:
                 raise ValueError(f"Can't close not opened account.")
-            self.is_closed = True
-            self.is_open = False
-            self.balance = 0
+            self._state = BankAccount.State.closed
+            self._balance = 0
 
 
 if __name__ == "__main__":
