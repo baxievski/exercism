@@ -6,7 +6,9 @@ class PhoneNumber(object):
         number = re.sub(r"[\(\)\.\-\+\s]", "", phone_number)
         self._number = number
         if not self._validate():
-            raise ValueError(f"'{phone_number}' - not a valid north american phone number.")
+            raise ValueError(
+                f"'{phone_number}': not a valid north american phone number."
+            )
 
     def _validate(self):
         if len(self._number) > 11:
