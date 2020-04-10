@@ -3,7 +3,7 @@ import re
 
 class PhoneNumber(object):
     def __init__(self, phone_number):
-        number = re.sub(r'[\(\)\.\-\+\s]', '', phone_number)
+        number = re.sub(r"[\(\)\.\-\+\s]", "", phone_number)
         self._number = number
         if not self._validate():
             raise ValueError(f"'{phone_number}' - not a valid north american phone number.")
@@ -47,11 +47,7 @@ class PhoneNumber(object):
         return self.area_code + self.exchange_code + self.subscriber_number
 
     def pretty(self):
-        p_format = '({area_code}) {exchange_code}-{subscriber_number}'
-        return p_format.format(
-            area_code=self.area_code,
-            exchange_code=self.exchange_code,
-            subscriber_number=self.subscriber_number)
+        return f"({self.area_code}) {self.exchange_code}-{self.subscriber_number}"
 
 
 if __name__ == "__main__":
