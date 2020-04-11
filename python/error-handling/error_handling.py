@@ -20,4 +20,4 @@ def filelike_objects_are_closed_on_exception(filelike_object):
 
 
 if __name__ == "__main__":
-    print(f"main()")
+    pass
