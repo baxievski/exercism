@@ -6,7 +6,7 @@ def slices(series, length):
     if length < 0:
         raise ValueError("Slice length can not be negative.")
     result = [
-        "".join(series[i:i+length])
+        series[i:i+length]
         for i in range(len(series) - length + 1)
     ]
     return result
