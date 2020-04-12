@@ -3,12 +3,14 @@ from collections import defaultdict
 
 
 def count_words(phrase):
-    words_regex = re.compile(r"([a-z0-9][a-z0-9']*[a-z0-9]|[a-z0-9]+)")
+    words = re.sub(r"[^a-z0-9']+", " ", phrase.lower()).split()
+    words = [word.strip("'") for word in words]
     result = defaultdict(int)
-    for word in words_regex.findall(phrase.lower()):
+    for word in words:
         result[word] += 1
     return dict(result)
 
 
 if __name__ == "__main__":
-    print(f"{count_words('one two three, four, one, one')}")
+    phrase = "''hey''"
+    print(f"{phrase=}\n{count_words(phrase)=}")
