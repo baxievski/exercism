@@ -3,7 +3,7 @@ package space
 type Planet string
 
 func Age(seconds float64, planet Planet) float64 {
-	earthSeconds := 31557600.0;
+	earthSeconds := 31557600.0
 	periods := map[Planet]float64{
 		"Mercury": 0.2408467,
 		"Venus":   0.61519726,
@@ -14,5 +14,5 @@ func Age(seconds float64, planet Planet) float64 {
 		"Uranus":  84.016846,
 		"Neptune": 164.79132,
 	}
-	return seconds / earthSeconds / periods[planet];
+	return seconds / earthSeconds / periods[planet]
 }
