@@ -1,5 +1,4 @@
 // Package leap implements exercism leap year solution
-// https://golang.org/doc/effective_go.html#commentary
 package leap
 
 // IsLeapYear returns true if the year passed as arg is a leap year
