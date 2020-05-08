@@ -1,7 +1,7 @@
 // Package strand implements a solution for the exercism rna-transcription chalenge
 package strand
 
-// ToRNA translates a DNA string to RNA
+// ToRNA transcripts a DNA string to RNA
 func ToRNA(dna string) string {
 	dnaToRna := map[rune]rune{
 		'G': 'C',
