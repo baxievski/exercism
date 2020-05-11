@@ -7,12 +7,13 @@ import (
 
 // Distance returns the hamming distance between the two strings passed as arguments
 func Distance(a, b string) (int, error) {
-	if len(a) != len(b) {
-		return -1, errors.New("Strings must have equal length")
+	ar, br := []rune(a), []rune(b)
+	if len(ar) != len(br) {
+		return 0, errors.New("strings must have equal length")
 	}
 	result := 0
-	for pos, char := range a {
-		if char != []rune(b)[pos] {
+	for pos, char := range ar {
+		if char != br[pos] {
 			result++
 		}
 	}
