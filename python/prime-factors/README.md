@@ -29,7 +29,6 @@ You can check this yourself:
 - = 60
 - Success!
 
-
 ## Exception messages
 
 Sometimes it is necessary to raise an exception. When you do this, you should include a meaningful error message to
