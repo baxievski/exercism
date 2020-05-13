@@ -1,4 +1,4 @@
-// Package hamming implements a solution for the exercism hamming chalenge
+// Package hamming implements a solution for the exercism hamming challenge
 package hamming
 
 import (
