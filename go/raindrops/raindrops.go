@@ -3,24 +3,22 @@ package raindrops
 
 import (
 	"strconv"
-	"strings"
 )
 
 // Convert returns the "raindrop" string corresponding to the factors of the integer arg
 func Convert(num int) string {
-	result := []string{}
+	result := ""
 	if num%3 == 0 {
-		result = append(result, "Pling")
+		result += "Pling"
 	}
 	if num%5 == 0 {
-		result = append(result, "Plang")
+		result += "Plang"
 	}
 	if num%7 == 0 {
-		result = append(result, "Plong")
+		result += "Plong"
 	}
 	if len(result) == 0 {
-		result = append(result, strconv.Itoa(num))
+		result += strconv.Itoa(num)
 	}
-	return strings.Join(result, "")
-
+	return result
 }
