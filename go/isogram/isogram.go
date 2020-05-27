@@ -5,27 +5,17 @@ import "unicode"
 
 // IsIsogram returns true if a word is an isogram
 func IsIsogram(input string) bool {
-	// ar, br := []rune(a), []rune(b)
 	ir := []rune(input)
-	seenChars := []rune{}
+	seenChars := map[rune]bool{}
 	for _, char := range ir {
 		if !unicode.IsLetter(char) {
 			continue
 		}
 		lowerChar := unicode.ToLower(char)
-		if elemInSlice(lowerChar, seenChars) {
+		if seenChars[lowerChar] {
 			return false
 		}
-		seenChars = append(seenChars, lowerChar)
+		seenChars[lowerChar] = true
 	}
 	return true
-}
-
-func elemInSlice(a rune, list []rune) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
 }
