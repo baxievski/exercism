@@ -3,7 +3,6 @@ import re
 
 class Markdown:
     def __init__(self, string):
-        super().__init__()
         self.string = string
         self.segments = self.string.split("\n")
     
@@ -11,31 +10,35 @@ class Markdown:
         return f"{''.join(x.render() for x in self.parse())}"
 
     def parse(self):
+        if not self.segments:
+            return []
         parsed = []
+        unordered_list = None
         for i, segment in enumerate(self.segments):
-            if i == 0:
-                parsed.append(self._parse_segment(segment))
+            parsed_segment = self._parse_segment(segment)
+            if not isinstance(parsed_segment, ListItem):
+                parsed.append(parsed_segment)
+                unordered_list = None
                 continue
-            if isinstance(parsed[i-1], UnorderedList):
-                _ = self._parse_segment(segment, unordered_list=parsed[i-1])
-                parsed.append(Empty())
+            if not unordered_list:
+                unordered_list = UnorderedList()
+                unordered_list.content.append(parsed_segment)
+                parsed.append(unordered_list)
                 continue
-            parsed.append(self._parse_segment(segment))
+            unordered_list.content.append(parsed_segment)
+            parsed.append(Empty())
         return parsed
     
-    def _parse_segment(self, segment, unordered_list=None):
-        if (header := self._header(segment)) is not None:
+    def _parse_segment(self, segment):
+        if header := self._header(segment):
             return header
-        if (list_item := self._list_item(segment)) is not None:
-            if unordered_list is None:
-                unordered_list = UnorderedList()
-            unordered_list.content.append(list_item)
-            return unordered_list
-        if (bold := self._bold(segment)) is not None:
+        if list_item := self._list_item(segment):
+            return list_item
+        if bold := self._bold(segment):
             return bold
-        if (italic := self._italic(segment)) is not None:
+        if italic := self._italic(segment):
             return italic
-        if (text := self._text(segment)) is not None:
+        if text := self._text(segment):
             return text
     
     def _text(self, segment):
@@ -50,26 +53,22 @@ class Markdown:
     def _bold(self, segment):
         if not (match := re.match(r"^(.*)__([^_]+)__(.*)$", segment)):
             return
-        result = Bold(self._parse_segment(match.group(2)))
-        if match.group(1):
-            result = [self._parse_segment(match.group(1)), result]
-        if match.group(3):
-            if not isinstance(result, list):
-                result = [result, ]
-            result.append(self._parse_segment(match.group(3)))
-        return Text(result)
+        result = [
+            self._parse_segment(match.group(1)),
+            Bold(self._parse_segment(match.group(2))),
+            self._parse_segment(match.group(3)),
+        ]
+        return Text([x for x in result if x])
 
     def _italic(self, segment):
         if not (match := re.match(r"^(.*)_([^_]+)_(.*)$", segment)):
             return
-        result = Italic(self._parse_segment(match.group(2)))
-        if match.group(1):
-            result = [self._parse_segment(match.group(1)), result]
-        if match.group(3):
-            if not isinstance(result, list):
-                result = [result, ]
-            result.append(self._parse_segment(match.group(3)))
-        return Text(result)
+        result = [
+            self._parse_segment(match.group(1)),
+            Italic(self._parse_segment(match.group(2))),
+            self._parse_segment(match.group(3)),
+        ]
+        return Text([x for x in result if x])
 
     def _list_item(self, segment):
         if not (match := re.match(r"^( *)\* (.+)$", segment)):
@@ -79,7 +78,6 @@ class Markdown:
 
 class Header:
     def __init__(self, level, content):
-        super().__init__()
         self.content = content
         self.level = level
 
@@ -93,7 +91,6 @@ class Header:
 
 class ListItem:
     def __init__(self, content):
-        super().__init__()
         self.content = content
 
     def __repr__(self):
@@ -109,7 +106,6 @@ class ListItem:
 
 class UnorderedList:
     def __init__(self):
-        super().__init__()
         self.content = []
 
     def __repr__(self):
@@ -123,7 +119,6 @@ class UnorderedList:
 
 class Text:
     def __init__(self, content):
-        super().__init__()
         self.content = content
 
     def __repr__(self):
@@ -143,7 +138,7 @@ class Text:
 
 class Empty:
     def __init__(self):
-        super().__init__()
+        pass
 
     def __repr__(self):
         return f"Empty()"
@@ -154,7 +149,6 @@ class Empty:
 
 class Bold:
     def __init__(self, content):
-        super().__init__()
         self.content = content
 
     def __repr__(self):
@@ -171,7 +165,6 @@ class Bold:
 
 class Italic:
     def __init__(self, content):
-        super().__init__()
         self.content = content
 
     def __repr__(self):
@@ -193,18 +186,18 @@ def parse(content):
 if __name__ == "__main__":
     tests = [
         "_This will be italic_",
-        # "This will be a paragraph",
-        # "__This will be bold__",
-        # "This will _be_ __mixed__",
-        # "# This will be an h1",
-        # "## This will be an h2",
+        "This will be a paragraph",
+        "__This will be bold__",
+        "This will _be_ __mixed__",
+        "# This will be an h1",
+        "## This will be an h2",
         "###### This will be an h6",
-        # "* Item 1\n* Item 2",
-        # "# Header!\n* __Bold Item__\n* _Italic Item_",
-        # "# This is a header with # and * in the text",
-        # "* Item 1 with a # in the text\n* Item 2 with * in the text",
-        # "This is a paragraph with # and * in the text",
-        "# Start a list\n* Item 1\n* Item 2\nEnd a list"
+        "* Item 1\n* Item 2",
+        "# Header!\n* __Bold Item__\n* _Italic Item_",
+        "# This is a header with # and * in the text",
+        "* Item 1 with a # in the text\n* Item 2 with * in the text",
+        "This is a paragraph with # and * in the text",
+        "# Before L1\n* L1 1\n* L1 2\nAfter L1\n* L2 1\n* L2 2\n* L3 2\nAfter L2",
     ]
     for test in tests:
         m_test = Markdown(test)
