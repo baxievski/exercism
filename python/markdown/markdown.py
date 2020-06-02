@@ -13,20 +13,24 @@ class Markdown:
         if not self.segments:
             return []
         parsed = []
-        unordered_list = None
-        for i, segment in enumerate(self.segments):
+        open_list = False
+        for segment in self.segments:
             parsed_segment = self._parse_segment(segment)
-            if not isinstance(parsed_segment, ListItem):
+            if not open_list and isinstance(parsed_segment, ListItem):
+                open_list = True
+                parsed_segment.first = True
                 parsed.append(parsed_segment)
-                unordered_list = None
                 continue
-            if not unordered_list:
-                unordered_list = UnorderedList()
-                unordered_list.content.append(parsed_segment)
-                parsed.append(unordered_list)
+            if open_list and not isinstance(parsed_segment, ListItem):
+                open_list = False
+                parsed[-1].last = True
+                parsed.append(parsed_segment)
                 continue
-            unordered_list.content.append(parsed_segment)
-            parsed.append(Empty())
+            if open_list:
+                parsed_segment.last = True
+            parsed.append(parsed_segment)
+        if open_list:
+            parsed[-1].last = True
         return parsed
     
     def _parse_segment(self, segment):
@@ -92,29 +96,26 @@ class Header:
 class ListItem:
     def __init__(self, content):
         self.content = content
+        self.first = False
+        self.last = False
 
     def __repr__(self):
         return f"ListItem({self.content})"
 
+    def _wrap_in_ul(self, rendered):
+        if self.first:
+            rendered = f"<ul>{rendered}"
+        if self.last:
+            rendered = f"{rendered}</ul>"
+        return rendered
+
     def render(self, inside=False):
         if isinstance(self.content, list):
-            return f"<li>{''.join(x.render(inside=True) for x in self.content)}</li>"
+            rendered_list = (x.render(inside=True) for x in self.content)
+            return self._wrap_in_ul(f"<li>{''.join(rendered_list)}</li>")
         if isinstance(self.content, str):
-            return f"<li>{self.content}</li>"
-        return f"<li>{self.content.render(inside=True)}</li>"
-
-
-class UnorderedList:
-    def __init__(self):
-        self.content = []
-
-    def __repr__(self):
-        return f"UnorderedList({self.content})"
-
-    def render(self):
-        print(f"UnorderedList.render(): {self}")
-        if self.content:
-            return f"<ul>{''.join(x.render(inside=True) for x in self.content)}</ul>"
+            return self._wrap_in_ul(f"<li>{self.content}</li>")
+        return self._wrap_in_ul(f"<li>{self.content.render(inside=True)}</li>")
 
 
 class Text:
@@ -134,17 +135,6 @@ class Text:
         if inside:
             return rendered
         return f"<p>{rendered}</p>"
-
-
-class Empty:
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        return f"Empty()"
-
-    def render(self, inside=False):
-        return f""
 
 
 class Bold:
