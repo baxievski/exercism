@@ -1,9 +1,9 @@
 def square_of_sum(n):
-    return sum(x for x in range(1, n+1)) ** 2
+    return sum(x for x in range(1, n + 1)) ** 2
 
 
 def sum_of_squares(n):
-    return sum(x**2 for x in range(1, n+1))
+    return sum(x ** 2 for x in range(1, n + 1))
 
 
 def difference_of_squares(n):

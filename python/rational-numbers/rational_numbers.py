@@ -12,38 +12,46 @@ class Rational(object):
         for i in range(min(abs(a), abs(b)), 1, -1):
             if a % i == 0 and b % i == 0:
                 return i
+
         return 1
 
     def __eq__(self, other):
         if not isinstance(self, Rational):
             return False
+
         if not isinstance(other, Rational):
             return False
+
         if self.numerator == 0 and other.numerator == 0:
             return True
-        return self.numerator == other.numerator and self.denominator == other.denominator
+
+        return (self.numerator == other.numerator and self.denominator == other.denominator)
 
     def __repr__(self):
-        return f'{self.numerator}/{self.denominator}'
+        return f"{self.numerator}/{self.denominator}"
 
     def __add__(self, other):
-        res_numer = self.numerator * other.denominator + other.numerator * self.denominator
+        res_numer = (self.numerator * other.denominator + other.numerator * self.denominator)
         res_denom = self.denominator * other.denominator
+
         return Rational(res_numer, res_denom)
 
     def __sub__(self, other):
-        res_numer = self.numerator * other.denominator - other.numerator * self.denominator
+        res_numer = (self.numerator * other.denominator - other.numerator * self.denominator)
         res_denom = self.denominator * other.denominator
+
         return Rational(res_numer, res_denom)
 
     def __mul__(self, other):
         res_numer = self.numerator * other.numerator
         res_denom = self.denominator * other.denominator
+
         return Rational(res_numer, res_denom)
 
     def __truediv__(self, other):
         res_numer = self.numerator * other.denominator
         res_denom = self.denominator * other.numerator
+
         return Rational(res_numer, res_denom)
 
     def __abs__(self):
@@ -56,7 +64,7 @@ class Rational(object):
         return base ** (self.numerator / self.denominator)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     r = Rational(1, 2)
     p = Rational(3, 4)
     print(r / p)

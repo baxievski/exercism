@@ -5,7 +5,7 @@ class TriangleError(Exception):
 class Triangle(object):
     def __init__(self, side_a, side_b, side_c):
         [self.a, self.b, self.c] = sorted([side_a, side_b, side_c])
-    
+
     @property
     def valid(self):
         if self.a <= 0 or self.b <= 0 or self.c <= 0:
@@ -48,5 +48,5 @@ def scalene(sides):
     return triangle.scalene
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

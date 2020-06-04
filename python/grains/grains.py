@@ -10,7 +10,7 @@ def total():
     return 2 ** 64 - 1
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(f"{square(3)=}")
     print(f"{square(4)=}")
     print(f"{square(5)=}")

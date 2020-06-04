@@ -4,7 +4,7 @@ class Clock(object):
         self.minute = minute % 60
 
     def __repr__(self):
-        return f'{self.hour:02d}:{self.minute:02d}'
+        return f"{self.hour:02d}:{self.minute:02d}"
 
     def __add__(self, other):
         return Clock(self.hour, self.minute + other)
@@ -16,5 +16,5 @@ class Clock(object):
         return self.hour == other.hour and self.minute == other.minute
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(f"{Clock(20, 20)}")

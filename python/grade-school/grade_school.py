@@ -27,7 +27,7 @@ class School(object):
         return all_grades
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     school = School()
     school.add_student(name="Bojan", grade=1)
     school.add_student(name="Bojan", grade=2)

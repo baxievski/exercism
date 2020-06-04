@@ -30,4 +30,3 @@ CHOICE = "choice"
 
 def score(dice, category):
     pass
-

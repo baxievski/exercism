@@ -5,7 +5,7 @@ class ComplexNumber:
     def __init__(self, real, imaginary):
         self.real = real
         self.imaginary = imaginary
-    
+
     def __repr__(self):
         return f"{self.real} + i * {self.imaginary}"
 
@@ -38,7 +38,7 @@ class ComplexNumber:
         return (self.real ** 2 + self.imaginary ** 2) ** 0.5
 
     def conjugate(self):
-        return ComplexNumber(self.real, -1*self.imaginary)
+        return ComplexNumber(self.real, -1 * self.imaginary)
 
     def exp(self):
         real = math.pow(math.e, self.real) * math.cos(self.imaginary)
@@ -49,6 +49,7 @@ class ComplexNumber:
         real = self.real / (abs(self) ** 2)
         imaginary = -1 * self.imaginary / (abs(self) ** 2)
         return ComplexNumber(real, imaginary)
+
 
 if __name__ == "__main__":
     print(f"{ComplexNumber(1, 2)=}")

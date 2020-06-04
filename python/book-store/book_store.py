@@ -29,7 +29,7 @@ def total(books):
     return min(possible_prices)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(f"{total([1])=}")
     print(f"{total([1, 2])=}")
     print(f"{total([1, 2, 3])=}")

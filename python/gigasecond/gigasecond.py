@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime
 
 
-def add(birth_date, seconds_to_add=10**9):
+def add(birth_date, seconds_to_add=10 ** 9):
     return birth_date + timedelta(seconds=seconds_to_add)
 
 

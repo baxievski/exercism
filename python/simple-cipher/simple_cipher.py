@@ -7,8 +7,10 @@ class Cipher(object):
     def __init__(self, key=None):
         if key is None:
             key = "".join(random.choices(string.ascii_lowercase, k=128))
+
         if not (key.islower() and key.isalpha()):
             raise ValueError("All items in the key must be chars and lowercase!")
+
         self.key = key
 
     def encode(self, text):
@@ -18,10 +20,10 @@ class Cipher(object):
             shift_distance = ord(self.key[i % len(self.key)]) - ord("a")
             encoded_character = chr(
                 ord("a")
-                + (ord(char) - ord("a") + shift_distance)
-                % (ord("z") - ord("a") + 1)
+                + (ord(char) - ord("a") + shift_distance) % (ord("z") - ord("a") + 1)
             )
             encoded_text += encoded_character
+
         return encoded_text
 
     def decode(self, text):
@@ -31,10 +33,10 @@ class Cipher(object):
             shift_distance = ord(self.key[i % len(self.key)]) - ord("a")
             decoded_character = chr(
                 ord("a")
-                + (ord(char) - ord("a") - shift_distance)
-                % (ord("z") - ord("a") + 1)
+                + (ord(char) - ord("a") - shift_distance) % (ord("z") - ord("a") + 1)
             )
             decoded_text += decoded_character
+
         return decoded_text
 
 

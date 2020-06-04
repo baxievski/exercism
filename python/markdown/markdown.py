@@ -5,7 +5,7 @@ class Markdown:
     def __init__(self, string):
         self.string = string
         self.segments = self.string.split("\n")
-    
+
     def render(self):
         return f"{''.join(x.render() for x in self.parse())}"
 
@@ -32,7 +32,7 @@ class Markdown:
         if open_list:
             parsed[-1].last = True
         return parsed
-    
+
     def _parse_segment(self, segment):
         if header := self._header(segment):
             return header
@@ -44,7 +44,7 @@ class Markdown:
             return italic
         if text := self._text(segment):
             return text
-    
+
     def _text(self, segment):
         if re.match(".+", segment):
             return Text(segment)
@@ -87,7 +87,7 @@ class Header:
 
     def __repr__(self):
         return f"Header({self.level}, {self.content})"
-    
+
     def render(self):
         rendered = self.content.render(inside=True)
         return f"<h{self.level}>{rendered}</h{self.level}>"
@@ -127,7 +127,7 @@ class Text:
 
     def render(self, inside=False):
         if isinstance(self.content, list):
-            rendered =  "".join(x.render(inside=True) for x in self.content)
+            rendered = "".join(x.render(inside=True) for x in self.content)
         elif isinstance(self.content, str):
             rendered = f"{self.content}"
         else:
@@ -143,7 +143,7 @@ class Bold:
 
     def __repr__(self):
         return f"Bold({self.content})"
-    
+
     def render(self, inside=False):
         if isinstance(self.content, list):
             rendered_list = (x.render(inside=True) for x in self.content)

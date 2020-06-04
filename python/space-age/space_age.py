@@ -28,5 +28,5 @@ class SpaceAge(object):
         return round(self.years / 164.79132, 2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass
