@@ -1,7 +1,7 @@
 class Table:
     def __init__(self):
         self._teams = {}
-    
+
     def add_match(self, t1_name, t2_name, result):
         t1 = Team(t1_name)
         if t1_name in self._teams:
@@ -32,7 +32,10 @@ class Table:
         header += f" | {'D': >2}"
         header += f" | {'L': >2}"
         header += f" | {'P': >2}"
-        results = [header, ]
+
+        results = [
+            header,
+        ]
         for team in sorted(self._teams.values(), reverse=True):
             row = f"{str(team): <30}"
             row += f" | {team.matches_played: >2}"
@@ -41,15 +44,12 @@ class Table:
             row += f" | {team.losses: >2}"
             row += f" | {team.points: >2}"
             results.append(row)
+
         return results
 
 
 class Team:
-    results_to_points = {
-        "win": 3,
-        "draw": 1,
-        "loss": 0
-    }
+    results_to_points = {"win": 3, "draw": 1, "loss": 0}
 
     def __init__(self, name):
         self.name = name
@@ -63,6 +63,7 @@ class Team:
         pts = Team.results_to_points["win"] * self.wins
         pts += Team.results_to_points["draw"] * self.draws
         pts += Team.results_to_points["loss"] * self.losses
+
         return pts
 
     def add_win(self):
@@ -82,11 +83,12 @@ class Team:
 
     def __hash__(self):
         return hash(repr(self))
-    
+
     def __lt__(self, other):
         a = (-1 * self.points, -1 * self.matches_played, self.name)
         b = (-1 * other.points, -1 * other.matches_played, other.name)
-        return b <= a
+
+        return b < a
 
 
 def tally(matches):
@@ -98,14 +100,16 @@ def tally(matches):
 
 
 def main():
-    table = tally([
+    table = tally(
+        [
             "Courageous Californians;Devastating Donkeys;win",
             "Allegoric Alaskans;Blithering Badgers;win",
             "Devastating Donkeys;Allegoric Alaskans;loss",
             "Courageous Californians;Blithering Badgers;win",
             "Blithering Badgers;Devastating Donkeys;draw",
             "Allegoric Alaskans;Courageous Californians;draw",
-        ])
+        ]
+    )
     for row in table:
         print(row)
 
