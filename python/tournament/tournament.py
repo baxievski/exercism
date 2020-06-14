@@ -85,8 +85,8 @@ class Team:
         return hash(repr(self))
 
     def __lt__(self, other):
-        a = (-1 * self.points, -1 * self.matches_played, self.name)
-        b = (-1 * other.points, -1 * other.matches_played, other.name)
+        a = (-1 * self.points, self.matches_played, self.name)
+        b = (-1 * other.points, other.matches_played, other.name)
 
         return b < a
 
