@@ -36,7 +36,7 @@ class Table:
         results = [
             header,
         ]
-        for team in sorted(self._teams.values(), reverse=True):
+        for team in sorted(self._teams.values()):
             row = f"{str(team): <30}"
             row += f" | {team.matches_played: >2}"
             row += f" | {team.wins: >2}"
@@ -88,7 +88,7 @@ class Team:
         a = (-1 * self.points, -1 * self.matches_played, self.name)
         b = (-1 * other.points, -1 * other.matches_played, other.name)
 
-        return b < a
+        return a < b
 
 
 def tally(matches):
