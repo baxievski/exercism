@@ -2,7 +2,6 @@
 package luhn
 
 import (
-	"errors"
 	"strings"
 	"unicode"
 )
@@ -15,37 +14,28 @@ func Valid(input string) bool {
 		return false
 	}
 
-	l, err := luhn(inputR)
+	luhn := 0
+	for i, rn := range inputR {
+		if !unicode.IsDigit(rn) {
+			return false
+		}
 
-	if err != nil {
-		return false
+		d := int(rn - '0')
+		if (len(inputR)+i-1)%2 == 0 {
+			luhn += d
+			continue
+		}
+
+		doubled := 2 * d
+		if doubled > 9 {
+			doubled -= 9
+		}
+		luhn += doubled
 	}
 
-	if l%10 != 0 {
+	if luhn%10 != 0 {
 		return false
 	}
 
 	return true
-}
-
-func luhn(input []rune) (int, error) {
-	result := 0
-	for i, rn := range input {
-		if !unicode.IsDigit(rn) {
-			return 0, errors.New("input can only have digits and optional spaces")
-		}
-		digit := int(rn - '0')
-
-		if (len(input)+i-1)%2 == 0 {
-			result += digit
-			continue
-		}
-
-		digitDoubled := 2 * digit
-		if digitDoubled > 9 {
-			digitDoubled -= 9
-		}
-		result += digitDoubled
-	}
-	return result, nil
 }
