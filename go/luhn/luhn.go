@@ -30,13 +30,13 @@ func Valid(input string) bool {
 
 func luhn(input []rune) (int, error) {
 	result := 0
-	for i, rn := range reverse(input) {
+	for i, rn := range input {
 		if !unicode.IsDigit(rn) {
 			return 0, errors.New("input can only have digits and optional spaces")
 		}
 		digit := int(rn - '0')
 
-		if i%2 == 0 {
+		if (len(input)+i-1)%2 == 0 {
 			result += digit
 			continue
 		}
@@ -48,16 +48,4 @@ func luhn(input []rune) (int, error) {
 		result += digitDoubled
 	}
 	return result, nil
-}
-
-func reverse(input []rune) []rune {
-	output := make([]rune, len(input))
-	copy(output, input)
-
-	for i := len(output)/2 - 1; i >= 0; i-- {
-		j := len(output) - 1 - i
-		output[i], output[j] = output[j], output[i]
-	}
-
-	return output
 }
