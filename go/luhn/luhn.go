@@ -8,34 +8,30 @@ import (
 
 // Valid tells if the input string is a valid luhn number
 func Valid(input string) bool {
-	inputR := []rune(strings.ReplaceAll(input, " ", ""))
+	inp := strings.ReplaceAll(input, " ", "")
 
-	if len(inputR) <= 1 {
+	if len(inp) <= 1 {
 		return false
 	}
 
+	double := len(inp)%2 == 0
 	luhn := 0
-	for i, rn := range inputR {
-		if !unicode.IsDigit(rn) {
+	for _, r := range inp {
+		if !unicode.IsDigit(r) {
 			return false
 		}
 
-		d := int(rn - '0')
-		if (len(inputR)+i-1)%2 == 0 {
-			luhn += d
-			continue
+		d := int(r - '0')
+		if double {
+			d = 2 * d
+			if d > 9 {
+				d -= 9
+			}
 		}
 
-		doubled := 2 * d
-		if doubled > 9 {
-			doubled -= 9
-		}
-		luhn += doubled
+		luhn += d
+		double = !double
 	}
 
-	if luhn%10 != 0 {
-		return false
-	}
-
-	return true
+	return luhn%10 == 0
 }
