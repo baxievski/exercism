@@ -11,11 +11,13 @@ type Time struct {
 func (t *Time) normalize() {
 	t.hours = (t.hours + t.minutes/60) % 24
 	t.minutes = t.minutes % 60
+
 	if t.minutes < 0 {
 		t.minutes += 60
 		t.hours--
 	}
-	if t.hours < 0 {
+
+	for t.hours < 0 {
 		t.hours += 24
 	}
 }
