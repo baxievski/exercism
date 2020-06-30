@@ -3,7 +3,7 @@ package clock
 
 import "fmt"
 
-// Time holds hours and minutes
+// Time represents the time with hours and minutes
 type Time struct {
 	hours, minutes int
 }
