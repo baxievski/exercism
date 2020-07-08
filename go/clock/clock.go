@@ -35,7 +35,7 @@ func (t Time) Add(m int) Time {
 
 // Subtract gives the time before m number of minutes
 func (t Time) Subtract(m int) Time {
-	return t.Add(-1 * m)
+	return New(t.hours, t.minutes-m)
 }
 
 func (t Time) String() string {
