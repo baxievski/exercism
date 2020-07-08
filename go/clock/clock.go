@@ -10,21 +10,21 @@ type Time struct {
 
 // New generates the time
 func New(hours, minutes int) Time {
-	hours = (hours + minutes/60) % 24
-	minutes = minutes % 60
+	h := (hours + minutes/60) % 24
+	m := minutes % 60
 
-	if minutes < 0 {
-		minutes += 60
-		hours--
+	for m < 0 {
+		m += 60
+		h--
 	}
 
-	for hours < 0 {
-		hours += 24
+	for h < 0 {
+		h += 24
 	}
 
 	return Time{
-		hours:   hours,
-		minutes: minutes,
+		hours:   h,
+		minutes: m,
 	}
 }
 
