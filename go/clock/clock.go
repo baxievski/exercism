@@ -5,7 +5,7 @@ import "fmt"
 
 // Time represents the time with hours and minutes
 type Time struct {
-	hours, minutes int
+	minutes int
 }
 
 // New generates the time
@@ -23,21 +23,20 @@ func New(hours, minutes int) Time {
 	}
 
 	return Time{
-		hours:   h,
-		minutes: m,
+		minutes: h*60 + m,
 	}
 }
 
 // Add gives the time after m number of minutes
 func (t Time) Add(m int) Time {
-	return New(t.hours, t.minutes+m)
+	return New(0, t.minutes+m)
 }
 
 // Subtract gives the time before m number of minutes
 func (t Time) Subtract(m int) Time {
-	return New(t.hours, t.minutes-m)
+	return New(0, t.minutes-m)
 }
 
 func (t Time) String() string {
-	return fmt.Sprintf("%02d:%02d", t.hours, t.minutes)
+	return fmt.Sprintf("%02d:%02d", t.minutes/60, t.minutes%60)
 }
