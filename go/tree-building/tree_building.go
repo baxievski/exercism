@@ -23,9 +23,8 @@ func Build(records []Record) (*Node, error) {
 	if len(records) == 0 {
 		return nil, nil
 	}
-	sort.Sort(byID(records))
-	nodes := map[int]*Node{}
-
+	sort.Slice(records, func(p, q int) bool { return records[p].ID < records[q].ID })
+	nodes := make([]*Node, len(records))
 	for i, record := range records {
 		if i != record.ID {
 			return nil, fmt.Errorf("node is our of order")
@@ -45,18 +44,4 @@ func Build(records []Record) (*Node, error) {
 		parent.Children = append(parent.Children, nodes[record.ID])
 	}
 	return nodes[0], nil
-}
-
-type byID []Record
-
-func (records byID) Len() int {
-	return len(records)
-}
-
-func (records byID) Less(i, j int) bool {
-	return records[i].ID < records[j].ID
-}
-
-func (records byID) Swap(i, j int) {
-	records[i], records[j] = records[j], records[i]
 }
