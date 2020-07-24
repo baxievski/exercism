@@ -1,43 +1,47 @@
+// Package robotname implements a solution for the exercism robot-name challenge
 package robotname
-
-// package main
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"time"
 )
 
+var usedNames = map[string]bool{}
+var seed = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+// Robot represents a robot with a name
 type Robot struct {
 	name string
 }
 
-var usedNames = map[string]bool{}
-var seed = rand.New(rand.NewSource(time.Now().UnixNano()))
-
+// Reset resets the robot name
 func (r *Robot) Reset() {
+	r.name = ""
 }
 
+// Name generates a random name for the robot
 func (r *Robot) Name() (string, error) {
 	if len(usedNames) == 26*26*10*10*10 {
-		return "", errors.New("text string")
+		return "", errors.New("all robot names have been previously used")
 	}
 	if r.name != "" {
 		return r.name, nil
 	}
+
 	upper := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	digits := "0123456789"
-	r.name = randString(2, upper) + randString(3, digits)
+
+	r.name = randString(upper, 2) + randString(digits, 3)
 	for usedNames[r.name] {
-		r.name = randString(2, upper) + randString(3, digits)
+		r.name = randString(upper, 2) + randString(digits, 3)
 	}
-	fmt.Println(r.name)
 	usedNames[r.name] = true
+
 	return r.name, nil
 }
 
-func randString(length int, choices string) string {
+func randString(choices string, length int) string {
 	b := make([]rune, length)
 	c := []rune(choices)
 	for i := range b {
