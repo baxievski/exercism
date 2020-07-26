@@ -8,7 +8,10 @@ import (
 )
 
 var usedNames = map[string]bool{}
-var seed = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
 
 // Robot represents a robot with a name
 type Robot struct {
@@ -22,15 +25,16 @@ func (r *Robot) Reset() {
 
 // Name generates a random name for the robot
 func (r *Robot) Name() (string, error) {
-	if len(usedNames) == 26*26*10*10*10 {
-		return "", errors.New("all robot names have been previously used")
+	upper := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	digits := "0123456789"
+	allCombinations := len(upper) * len(upper) * len(digits) * len(digits) * len(digits)
+
+	if len(usedNames) == allCombinations {
+		return "", errors.New("all combinations for robot names have been exhausted")
 	}
 	if r.name != "" {
 		return r.name, nil
 	}
-
-	upper := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	digits := "0123456789"
 
 	r.name = randString(upper, 2) + randString(digits, 3)
 	for usedNames[r.name] {
@@ -45,7 +49,7 @@ func randString(choices string, length int) string {
 	b := make([]rune, length)
 	c := []rune(choices)
 	for i := range b {
-		b[i] = c[seed.Intn(len(c))]
+		b[i] = c[rand.Intn(len(c))]
 	}
 	return string(b)
 }
