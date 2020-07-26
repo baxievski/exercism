@@ -10,6 +10,14 @@ type Node struct {
 	next *Node
 }
 
+// List represents a doubly linked list
+type List struct {
+	head *Node
+	tail *Node
+}
+
+var ErrEmptyList = fmt.Errorf("list is empty")
+
 // Next gives the next node in the list
 func (n *Node) Next() *Node {
 	return n.next
@@ -36,23 +44,11 @@ func (n *Node) Last() *Node {
 	return n
 }
 
-// List represents a doubly linked list
-type List struct {
-	head *Node
-	tail *Node
-}
-
 // NewList creates a doubly linked list
 func NewList(args ...interface{}) *List {
 	l := &List{}
-	for i, a := range args {
-		if i == 0 {
-			l.tail = &Node{Val: a}
-			l.head = l.tail
-			continue
-		}
-		l.tail.next = &Node{Val: a, prev: l.tail}
-		l.tail = l.tail.next
+	for _, a := range args {
+		l.PushBack(a)
 	}
 	return l
 }
@@ -69,20 +65,31 @@ func (l *List) Last() *Node {
 
 // PushBack pushes a node at the end of the list
 func (l *List) PushBack(v interface{}) {
-	l.tail.next = &Node{Val: v, prev: l.tail}
+	n := Node{Val: v, prev: l.tail, next: nil}
+	if l.tail == nil {
+		l.tail = &n
+	} else {
+		l.tail.next = &n
+	}
+	l.tail = &n
 }
 
 // PushFront pushes a node at the start of the list
 func (l *List) PushFront(v interface{}) {
-	l.head = &Node{Val: v, next: l.head}
-	l.head.next.prev = l.head
+	n := Node{Val: v, next: l.head}
+	if l.head == nil {
+		l.head = &n
+	} else {
+		l.head.prev = &n
+	}
+	l.head = &n
 }
 
 // PopFront pops a node from the start of the list
 func (l *List) PopFront() (interface{}, error) {
 	h := l.First()
 	if h == nil {
-		return 0, fmt.Errorf("attempt to pop an empty list")
+		return 0, ErrEmptyList
 	}
 	l.head = l.head.Next()
 	l.head.prev = nil
@@ -90,10 +97,10 @@ func (l *List) PopFront() (interface{}, error) {
 }
 
 // PopBack pops a node from the end of the list
-func (l *List) PopBack(v interface{}) (interface{}, error) {
+func (l *List) PopBack() (interface{}, error) {
 	h := l.Last()
 	if h == nil {
-		return 0, fmt.Errorf("attempt to pop an empty list")
+		return 0, ErrEmptyList
 	}
 	l.tail = l.tail.Prev()
 	l.tail.next = nil
