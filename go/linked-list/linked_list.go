@@ -16,6 +16,7 @@ type List struct {
 	tail *Node
 }
 
+// ErrEmptyList represents the error when the pushing or popping an empty list
 var ErrEmptyList = fmt.Errorf("list is empty")
 
 // Next gives the next node in the list
@@ -67,7 +68,7 @@ func (l *List) Last() *Node {
 func (l *List) PushBack(v interface{}) {
 	n := Node{Val: v, prev: l.tail, next: nil}
 	if l.tail == nil {
-		l.tail = &n
+		l.head = &n
 	} else {
 		l.tail.next = &n
 	}
@@ -76,43 +77,49 @@ func (l *List) PushBack(v interface{}) {
 
 // PushFront pushes a node at the start of the list
 func (l *List) PushFront(v interface{}) {
-	n := Node{Val: v, next: l.head}
+	n := &Node{Val: v, next: l.head, prev: nil}
 	if l.head == nil {
-		l.head = &n
+		l.tail = n
 	} else {
-		l.head.prev = &n
+		l.head.prev = n
 	}
-	l.head = &n
+	l.head = n
 }
 
 // PopFront pops a node from the start of the list
 func (l *List) PopFront() (interface{}, error) {
-	h := l.First()
-	if h == nil {
+	n := l.First()
+	if n == nil {
 		return 0, ErrEmptyList
 	}
-	l.head = l.head.Next()
-	l.head.prev = nil
-	return h.Val, nil
+	l.head = n.Next()
+	if l.head == nil {
+		l.tail = nil
+	} else {
+		l.head.prev = nil
+	}
+	return n.Val, nil
 }
 
 // PopBack pops a node from the end of the list
 func (l *List) PopBack() (interface{}, error) {
-	h := l.Last()
-	if h == nil {
+	n := l.Last()
+	if n == nil {
 		return 0, ErrEmptyList
 	}
-	l.tail = l.tail.Prev()
-	l.tail.next = nil
-	return h.Val, nil
-
+	l.tail = n.Prev()
+	if l.tail == nil {
+		l.head = nil
+	} else {
+		l.tail.next = nil
+	}
+	return n.Val, nil
 }
 
 // Reverse reverses the linked list
-func (l *List) Reverse() *List {
+func (l *List) Reverse() {
 	for n := l.First(); n != nil; n = n.Prev() {
 		n.prev, n.next = n.next, n.prev
 	}
 	l.head, l.tail = l.tail, l.head
-	return l
 }
