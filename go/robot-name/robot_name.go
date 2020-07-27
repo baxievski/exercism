@@ -25,31 +25,26 @@ func (r *Robot) Reset() {
 
 // Name generates a random name for the robot
 func (r *Robot) Name() (string, error) {
-	upper := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	digits := "0123456789"
-	allCombinations := len(upper) * len(upper) * len(digits) * len(digits) * len(digits)
-
+	allCombinations := 26 * 26 * 10 * 10 * 10
 	if len(usedNames) == allCombinations {
 		return "", errors.New("all combinations for robot names have been exhausted")
 	}
 	if r.name != "" {
 		return r.name, nil
 	}
-
-	r.name = randString(upper, 2) + randString(digits, 3)
+	r.name = randName()
 	for usedNames[r.name] {
-		r.name = randString(upper, 2) + randString(digits, 3)
+		r.name = randName()
 	}
 	usedNames[r.name] = true
 
 	return r.name, nil
 }
 
-func randString(choices string, length int) string {
-	b := make([]rune, length)
-	c := []rune(choices)
-	for i := range b {
-		b[i] = c[rand.Intn(len(c))]
-	}
-	return string(b)
+func randName() string {
+	return string('A'+rand.Intn(26)) +
+		string('A'+rand.Intn(26)) +
+		string('0'+rand.Intn(10)) +
+		string('0'+rand.Intn(10)) +
+		string('0'+rand.Intn(10))
 }
