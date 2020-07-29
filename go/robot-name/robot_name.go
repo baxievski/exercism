@@ -32,19 +32,22 @@ func (r *Robot) Name() (string, error) {
 	if r.name != "" {
 		return r.name, nil
 	}
-	r.name = randName()
-	for usedNames[r.name] {
-		r.name = randName()
+	name := randName()
+	for usedNames[string(name)] {
+		name = randName()
 	}
-	usedNames[r.name] = true
+	usedNames[string(name)] = true
+	r.name = string(name)
 
 	return r.name, nil
 }
 
-func randName() string {
-	return string('A'+rand.Intn(26)) +
-		string('A'+rand.Intn(26)) +
-		string('0'+rand.Intn(10)) +
-		string('0'+rand.Intn(10)) +
-		string('0'+rand.Intn(10))
+func randName() []byte {
+	return []byte{
+		'A' + byte(rand.Intn(26)),
+		'A' + byte(rand.Intn(26)),
+		'0' + byte(rand.Intn(10)),
+		'0' + byte(rand.Intn(10)),
+		'0' + byte(rand.Intn(10)),
+	}
 }
