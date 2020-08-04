@@ -82,31 +82,17 @@ func (t *Table) addMatch(team1Name, team2Name, result string) error {
 
 func (t *Table) getSortedTeams() []*Team {
 	teams := make([]*Team, 0, len(t.Teams))
-	// values := make([]valueType, 0, len(myMap))
-
 	for _, v := range t.Teams {
 		teams = append(teams, v)
 	}
 	sort.Slice(teams, func(p, q int) bool {
-		if teams[p].points() < teams[q].points() {
-			return false
+		if teams[p].points() != teams[q].points() {
+			return teams[p].points() > teams[q].points()
 		}
-		if teams[p].points() > teams[q].points() {
-			return true
+		if teams[p].Name != teams[q].Name {
+			return teams[p].Name < teams[q].Name
 		}
-		if teams[p].MatchesPlayed > teams[q].MatchesPlayed {
-			return false
-		}
-		if teams[p].MatchesPlayed < teams[q].MatchesPlayed {
-			return true
-		}
-		if teams[p].Name > teams[q].Name {
-			return false
-		}
-		if teams[p].Name < teams[q].Name {
-			return true
-		}
-		return false
+		return teams[p].MatchesPlayed < teams[q].MatchesPlayed
 	})
 	return teams
 }
