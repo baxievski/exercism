@@ -89,10 +89,7 @@ func (t *Table) getSortedTeams() []*Team {
 		if teams[p].points() != teams[q].points() {
 			return teams[p].points() > teams[q].points()
 		}
-		if teams[p].Name != teams[q].Name {
-			return teams[p].Name < teams[q].Name
-		}
-		return teams[p].MatchesPlayed < teams[q].MatchesPlayed
+		return teams[p].Name < teams[q].Name
 	})
 	return teams
 }
