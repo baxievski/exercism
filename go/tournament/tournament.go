@@ -85,9 +85,9 @@ func (t *Table) getSortedTeams() []*Team {
 }
 
 // Tally reads a stream of matches and writes a stream representing the table
-func Tally(input io.Reader, output io.Writer) error {
+func Tally(i io.Reader, o io.Writer) error {
 	table := &Table{teams: map[string]*Team{}}
-	r := csv.NewReader(input)
+	r := csv.NewReader(i)
 	r.Comma = ';'
 	r.Comment = '#'
 	r.FieldsPerRecord = 3
@@ -104,19 +104,10 @@ func Tally(input io.Reader, output io.Writer) error {
 			return err
 		}
 	}
-	template := "%-31v|%3v |%3v |%3v |%3v |%3v\n"
-	fmt.Fprintf(output, template, "Team", "MP", "W", "D", "L", "P")
-	for _, team := range table.getSortedTeams() {
-		fmt.Fprintf(
-			output,
-			template,
-			team.name,
-			team.matchesPlayed,
-			team.wins,
-			team.draws,
-			team.losses,
-			team.points(),
-		)
+	l := "%-31v|%3v |%3v |%3v |%3v |%3v\n"
+	fmt.Fprintf(o, l, "Team", "MP", "W", "D", "L", "P")
+	for _, t := range table.getSortedTeams() {
+		fmt.Fprintf(o, l, t.name, t.matchesPlayed, t.wins, t.draws, t.losses, t.points())
 	}
 	return nil
 }
