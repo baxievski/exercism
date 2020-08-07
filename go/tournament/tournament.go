@@ -31,7 +31,7 @@ func (team *Team) win() {
 	team.wins++
 }
 
-func (team *Team) loose() {
+func (team *Team) lose() {
 	team.matchesPlayed++
 	team.losses++
 }
@@ -58,9 +58,9 @@ func (t *Table) addMatch(team1Name, team2Name, result string) error {
 		team2.draw()
 	} else if result == "win" {
 		team1.win()
-		team2.loose()
+		team2.lose()
 	} else if result == "loss" {
-		team1.loose()
+		team1.lose()
 		team2.win()
 	} else {
 		return fmt.Errorf("invalid result '%v'", result)
