@@ -2,67 +2,57 @@
 package tournament
 
 import (
-	"bufio"
+	"encoding/csv"
 	"fmt"
 	"io"
 	"sort"
-	"strings"
 )
 
-// Team represents a team
+// Team represents a team in a footbal competition
 type Team struct {
-	Name          string
-	MatchesPlayed int
-	Wins          int
-	Draws         int
-	Losses        int
+	name          string
+	matchesPlayed int
+	wins          int
+	draws         int
+	losses        int
 }
 
-// Table represents a table of teams
+// Table represents a table of results of matches played between teams
 type Table struct {
-	Teams map[string]*Team
+	teams map[string]*Team
 }
 
 func (team *Team) points() int {
-	resultsToPoints := map[string]int{
-		"win":  3,
-		"draw": 1,
-		"loss": 0,
-	}
-	points := resultsToPoints["win"] * team.Wins
-	points += resultsToPoints["draw"] * team.Draws
-	points += resultsToPoints["loss"] * team.Losses
-	return points
+	return 3*team.wins + team.draws
 }
 
 func (team *Team) win() {
-	team.MatchesPlayed++
-	team.Wins++
+	team.matchesPlayed++
+	team.wins++
 }
 
 func (team *Team) loose() {
-	team.MatchesPlayed++
-	team.Losses++
+	team.matchesPlayed++
+	team.losses++
 }
 
 func (team *Team) draw() {
-	team.MatchesPlayed++
-	team.Draws++
+	team.matchesPlayed++
+	team.draws++
 }
 
 func (t *Table) addMatch(team1Name, team2Name, result string) error {
 	var team1, team2 *Team
-	if team, ok := t.Teams[team1Name]; ok {
+	if team, ok := t.teams[team1Name]; ok {
 		team1 = team
 	} else {
-		team1 = &Team{Name: team1Name}
+		team1 = &Team{name: team1Name}
 	}
-	if team, ok := t.Teams[team2Name]; ok {
+	if team, ok := t.teams[team2Name]; ok {
 		team2 = team
 	} else {
-		team2 = &Team{Name: team2Name}
+		team2 = &Team{name: team2Name}
 	}
-
 	if result == "draw" {
 		team1.draw()
 		team2.draw()
@@ -75,62 +65,58 @@ func (t *Table) addMatch(team1Name, team2Name, result string) error {
 	} else {
 		return fmt.Errorf("invalid result '%v'", result)
 	}
-	t.Teams[team1Name] = team1
-	t.Teams[team2Name] = team2
+	t.teams[team1Name] = team1
+	t.teams[team2Name] = team2
 	return nil
 }
 
 func (t *Table) getSortedTeams() []*Team {
-	teams := make([]*Team, 0, len(t.Teams))
-	for _, v := range t.Teams {
+	teams := make([]*Team, 0, len(t.teams))
+	for _, v := range t.teams {
 		teams = append(teams, v)
 	}
 	sort.Slice(teams, func(p, q int) bool {
 		if teams[p].points() != teams[q].points() {
 			return teams[p].points() > teams[q].points()
 		}
-		return teams[p].Name < teams[q].Name
+		return teams[p].name < teams[q].name
 	})
 	return teams
 }
 
 // Tally reads a stream of matches and writes a stream representing the table
 func Tally(input io.Reader, output io.Writer) error {
-	scanner := bufio.NewScanner(input)
-	table := &Table{Teams: map[string]*Team{}}
-
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.HasPrefix(line, "#") {
-			continue
+	table := &Table{teams: map[string]*Team{}}
+	r := csv.NewReader(input)
+	r.Comma = ';'
+	r.Comment = '#'
+	r.FieldsPerRecord = 3
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
 		}
-		if line == "" {
-			continue
+		if err != nil {
+			return err
 		}
-		match := strings.Split(string(line), ";")
-		if len(match) != 3 {
-			return fmt.Errorf("invalid input %v", line)
-		}
-
-		if table.addMatch(match[0], match[1], match[2]) != nil {
-			return fmt.Errorf("invalid input %v", line)
+		err = table.addMatch(record[0], record[1], record[2])
+		if err != nil {
+			return err
 		}
 	}
-
 	template := "%-31v|%3v |%3v |%3v |%3v |%3v\n"
 	fmt.Fprintf(output, template, "Team", "MP", "W", "D", "L", "P")
 	for _, team := range table.getSortedTeams() {
 		fmt.Fprintf(
 			output,
 			template,
-			team.Name,
-			team.MatchesPlayed,
-			team.Wins,
-			team.Draws,
-			team.Losses,
+			team.name,
+			team.matchesPlayed,
+			team.wins,
+			team.draws,
+			team.losses,
 			team.points(),
 		)
 	}
-
 	return nil
 }
