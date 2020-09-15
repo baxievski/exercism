@@ -6,37 +6,44 @@ import (
 	"strings"
 )
 
-type dailyPresent struct {
-	day     string
-	present string
+var days = []string{
+	"first",
+	"second",
+	"third",
+	"fourth",
+	"fifth",
+	"sixth",
+	"seventh",
+	"eighth",
+	"ninth",
+	"tenth",
+	"eleventh",
+	"twelfth",
+}
+
+var presents = []string{
+	"twelve Drummers Drumming, ",
+	"eleven Pipers Piping, ",
+	"ten Lords-a-Leaping, ",
+	"nine Ladies Dancing, ",
+	"eight Maids-a-Milking, ",
+	"seven Swans-a-Swimming, ",
+	"six Geese-a-Laying, ",
+	"five Gold Rings, ",
+	"four Calling Birds, ",
+	"three French Hens, ",
+	"two Turtle Doves, ",
+	"and a Partridge in a Pear Tree.",
 }
 
 // Verse gives the verse from `The Twelve Days of Christmas` corresponding to the nth day
 func Verse(n int) string {
-	dailyPresents := map[int]dailyPresent{
-		1:  {"first", "and a Partridge in a Pear Tree."},
-		2:  {"second", "two Turtle Doves, "},
-		3:  {"third", "three French Hens, "},
-		4:  {"fourth", "four Calling Birds, "},
-		5:  {"fifth", "five Gold Rings, "},
-		6:  {"sixth", "six Geese-a-Laying, "},
-		7:  {"seventh", "seven Swans-a-Swimming, "},
-		8:  {"eighth", "eight Maids-a-Milking, "},
-		9:  {"ninth", "nine Ladies Dancing, "},
-		10: {"tenth", "ten Lords-a-Leaping, "},
-		11: {"eleventh", "eleven Pipers Piping, "},
-		12: {"twelfth", "twelve Drummers Drumming, "},
-	}
 	verse := "On the %v day of Christmas my true love gave to me: %v"
 	if n == 1 {
-		return fmt.Sprintf(verse, dailyPresents[n].day, "a Partridge in a Pear Tree.")
+		return fmt.Sprintf(verse, days[n-1], "a Partridge in a Pear Tree.")
 	}
 
-	presents := make([]string, n)
-	for i := n; i >= 1; i-- {
-		presents[n-i] = dailyPresents[i].present
-	}
-	return fmt.Sprintf(verse, dailyPresents[n].day, strings.Join(presents, ""))
+	return fmt.Sprintf(verse, days[n-1], strings.Join(presents[12-n:], ""))
 }
 
 // Song gives the `The Twelve Days of Christmas` song
