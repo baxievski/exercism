@@ -9,8 +9,8 @@ func IsPangram(i string) bool {
 	for _, r := range []rune(i) {
 		seen[unicode.ToLower(r)] = true
 	}
-	for i := 0; i < 26; i++ {
-		if _, ok := seen['a'+rune(i)]; !ok {
+	for r := 'a'; r <= 'z'; r++ {
+		if _, ok := seen[r]; !ok {
 			return false
 		}
 	}
