@@ -1,93 +1,76 @@
+// Package encode implements a solution for the exercism run-length-encoding challenge
 package encode
 
 import (
-	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
+// RunLengthEncode encodes a string with run length encoding
 func RunLengthEncode(s string) string {
-	// result := ""
-	// gr := group([]rune(s))
-	// for _, g := range gr {
-	// 	if len(g) == 1 {
-	// 		result += string(g[0])
-	// 		continue
-	// 	}
-	// 	result += strconv.Itoa(len(g)) + string(g[0])
-	// }
-	// return result
-	enc := ""
-	sR := []rune(s)
-	if len(sR) <= 1 {
+	runes := []rune(s)
+	if len(runes) <= 1 {
 		return s
 	}
-	p := sR[0]
-	n := 0
-	for i, r := range sR {
+	var encoded strings.Builder
+	prev := runes[0]
+	reps := 1
+	for i, char := range runes {
 		if i == 0 {
-			p = r
-			n = 1
 			continue
 		}
-		if p == r {
-			n++
-			if i == len(sR)-1 {
-				if n > 1 {
-					enc += strconv.Itoa(n)
-				}
-				enc += string(p)
+
+		if i < len(runes)-1 {
+			if prev == char {
+				reps++
+				continue
 			}
+			if reps > 1 {
+				encoded.WriteString(strconv.Itoa(reps))
+			}
+			encoded.WriteRune(prev)
+			prev = char
+			reps = 1
 			continue
 		}
-		if n > 1 {
-			enc += strconv.Itoa(n)
+
+		if prev == char {
+			reps++
+			encoded.WriteString(strconv.Itoa(reps))
+			encoded.WriteRune(prev)
+			continue
 		}
-		enc += string(p)
-		p = r
-		n = 1
-		if i == len(sR)-1 {
-			enc += string(p)
+
+		if reps > 1 {
+			encoded.WriteString(strconv.Itoa(reps))
 		}
+		encoded.WriteRune(prev)
+		encoded.WriteRune(char)
 	}
-	return enc
+	return encoded.String()
 }
 
-func RunLengthDecode(inp string) string {
-	result := ""
-	r := regexp.MustCompile(`\d*\D`)
-	for _, i := range r.FindAllIndex([]byte(inp), -1) {
-		c := inp[i[1]-1]
-		n := 1
-		if i[1]-i[0] != 1 {
-			ns := inp[i[0] : i[1]-1]
-			n, _ = strconv.Atoi(ns)
-		}
-		result += strings.Repeat(string(c), n)
+// RunLengthDecode decodes a run length encoded string
+func RunLengthDecode(s string) string {
+	runes := []rune(s)
+	if len(runes) <= 1 {
+		return s
 	}
-	return result
-}
-
-func group(inp []rune) [][]rune {
-	grouped := [][]rune{}
-	prev := []rune{}
-	for i, r := range inp {
-		if i == 0 {
-			prev = []rune{r}
+	var decoded strings.Builder
+	ind := 0
+	for i, char := range runes {
+		if unicode.IsNumber(char) {
 			continue
 		}
-		if r == prev[0] {
-			prev = append(prev, r)
-			if i == len(inp)-1 {
-				grouped = append(grouped, prev)
-			}
+		reps, err := strconv.Atoi(string(runes[ind:i]))
+		if err != nil {
+			decoded.WriteRune(char)
+			ind = i + 1
 			continue
 		}
-		grouped = append(grouped, prev)
-		prev = []rune{r}
-		if i == len(inp)-1 {
-			grouped = append(grouped, prev)
-		}
+		decoded.WriteString(strings.Repeat(string(char), reps))
+		ind = i + 1
 	}
-	return grouped
+	return decoded.String()
 }
