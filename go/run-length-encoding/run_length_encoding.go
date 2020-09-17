@@ -7,22 +7,20 @@ import (
 )
 
 func RunLengthEncode(i string) string {
-	result := []rune{}
+	result := ""
 	gr := group([]rune(i))
 	for _, g := range gr {
 		if len(g) == 1 {
-			result = append(result, g[0])
+			result += string(g[0])
 			continue
 		}
-		c := []rune(strconv.Itoa(len(g)))
-		c = append(c, g[0])
-		result = append(result, c...)
+		result += strconv.Itoa(len(g)) + string(g[0])
 	}
-	return string(result)
+	return result
 }
 
 func RunLengthDecode(inp string) string {
-	result := []rune{}
+	result := ""
 	r := regexp.MustCompile(`\d*\D`)
 	for _, i := range r.FindAllIndex([]byte(inp), -1) {
 		c := inp[i[1]-1]
@@ -31,9 +29,9 @@ func RunLengthDecode(inp string) string {
 			ns := inp[i[0] : i[1]-1]
 			n, _ = strconv.Atoi(ns)
 		}
-		result = append(result, []rune(strings.Repeat(string(c), n))...)
+		result += strings.Repeat(string(c), n)
 	}
-	return string(result)
+	return result
 }
 
 func group(inp []rune) [][]rune {
