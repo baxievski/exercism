@@ -6,17 +6,51 @@ import (
 	"strings"
 )
 
-func RunLengthEncode(i string) string {
-	result := ""
-	gr := group([]rune(i))
-	for _, g := range gr {
-		if len(g) == 1 {
-			result += string(g[0])
+func RunLengthEncode(s string) string {
+	// result := ""
+	// gr := group([]rune(s))
+	// for _, g := range gr {
+	// 	if len(g) == 1 {
+	// 		result += string(g[0])
+	// 		continue
+	// 	}
+	// 	result += strconv.Itoa(len(g)) + string(g[0])
+	// }
+	// return result
+	enc := ""
+	sR := []rune(s)
+	if len(sR) <= 1 {
+		return s
+	}
+	p := sR[0]
+	n := 0
+	for i, r := range sR {
+		if i == 0 {
+			p = r
+			n = 1
 			continue
 		}
-		result += strconv.Itoa(len(g)) + string(g[0])
+		if p == r {
+			n++
+			if i == len(sR)-1 {
+				if n > 1 {
+					enc += strconv.Itoa(n)
+				}
+				enc += string(p)
+			}
+			continue
+		}
+		if n > 1 {
+			enc += strconv.Itoa(n)
+		}
+		enc += string(p)
+		p = r
+		n = 1
+		if i == len(sR)-1 {
+			enc += string(p)
+		}
 	}
-	return result
+	return enc
 }
 
 func RunLengthDecode(inp string) string {
