@@ -20,7 +20,6 @@ func RunLengthEncode(s string) string {
 		if i == 0 {
 			continue
 		}
-
 		if i < len(runes)-1 {
 			if prev == char {
 				reps++
@@ -34,14 +33,12 @@ func RunLengthEncode(s string) string {
 			reps = 1
 			continue
 		}
-
 		if prev == char {
 			reps++
 			encoded.WriteString(strconv.Itoa(reps))
 			encoded.WriteRune(prev)
 			continue
 		}
-
 		if reps > 1 {
 			encoded.WriteString(strconv.Itoa(reps))
 		}
