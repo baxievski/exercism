@@ -1,32 +1,32 @@
 // Package sublist implements a solution for the exercism sublist challenge
 package sublist
 
-const equal = "equal"
-const sublist = "sublist"
-const superlist = "superlist"
-const unequal = "unequal"
-
 // Relation represents the relationship
 type Relation string
+
+const equal Relation = "equal"
+const sublist Relation = "sublist"
+const superlist Relation = "superlist"
+const unequal Relation = "unequal"
 
 // Sublist gives the sublist/superlist/equal/unequal relationship between two lists
 func Sublist(a, b []int) Relation {
 	if len(a) == len(b) {
 		if isEqual(a, b) {
-			return Relation(equal)
+			return equal
 		}
-		return Relation(unequal)
+		return unequal
 	}
 	if len(a) < len(b) {
 		if isSublist(a, b) {
-			return Relation(sublist)
+			return sublist
 		}
-		return Relation(unequal)
+		return unequal
 	}
 	if isSublist(b, a) {
-		return Relation(superlist)
+		return superlist
 	}
-	return Relation(unequal)
+	return unequal
 }
 
 func isEqual(x, y []int) bool {
