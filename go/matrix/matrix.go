@@ -15,15 +15,15 @@ func New(i string) (Matrix, error) {
 	rows := strings.Split(i, "\n")
 	w := 0
 	matrix := make([][]int, len(rows))
-	for i, row := range rows {
-		rowElements := strings.Split(strings.TrimSpace(row), " ")
+	for i, r := range rows {
+		rEls := strings.Split(strings.TrimSpace(r), " ")
 		if w == 0 {
-			w = len(rowElements)
-		} else if len(rowElements) != w {
-			return nil, fmt.Errorf("matrix has different number of columns")
+			w = len(rEls)
+		} else if len(rEls) != w {
+			return nil, fmt.Errorf("matrix has different number of elements in rows")
 		}
-		row := make([]int, len(rowElements))
-		for j, e := range rowElements {
+		row := make([]int, len(rEls))
+		for j, e := range rEls {
 			elem, err := strconv.Atoi(e)
 			if err != nil {
 				return nil, err
@@ -38,28 +38,28 @@ func New(i string) (Matrix, error) {
 
 // Rows returns the rows of the matrix
 func (m Matrix) Rows() [][]int {
-	result := make([][]int, len(m))
+	rows := make([][]int, len(m))
 	for i, r := range m {
-		result[i] = make([]int, len(r))
+		rows[i] = make([]int, len(r))
 		for j, e := range r {
-			result[i][j] = e
+			rows[i][j] = e
 		}
 	}
-	return result
+	return rows
 }
 
 // Cols returns the columns of the matrix
 func (m Matrix) Cols() [][]int {
-	c := make([][]int, len(m[0]))
+	columns := make([][]int, len(m[0]))
 	for i := range m[0] {
-		c[i] = make([]int, len(m))
+		columns[i] = make([]int, len(m))
 	}
 	for i, r := range m {
 		for j, e := range r {
-			c[j][i] = e
+			columns[j][i] = e
 		}
 	}
-	return c
+	return columns
 }
 
 // Set sets the value of an element in the matrix
