@@ -2,114 +2,143 @@ package grep
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strings"
 )
 
-type match struct {
+type searchResult struct {
 	text     string
 	lineNum  int
 	fileName string
 }
 
-type matchFn func(a, b string) bool
+type searchResults []searchResult
+type options struct {
+	ignoreCase    bool
+	invert        bool
+	wholeLine     bool
+	lineNumbers   bool
+	fileNames     bool
+	multipleFiles bool
+}
 
-func Search(pattern string, flags []string, files []string) []string {
-	matched := []match{}
+type grep struct {
+	opts    options
+	results []searchResult
+}
+
+func Search(pattern string, flags []string, filePaths []string) []string {
+	// g := grep{}
+	results := searchResults{}
 	opts := parseOptions(flags)
-	fn := func(a, b string) bool { return strings.Contains(a, b) }
-	if opts["-i"] {
-		fn = func(a, b string) bool { return strings.Contains(strings.ToLower(a), strings.ToLower(b)) }
-	}
-	if opts["-x"] {
-		fn = func(a, b string) bool { return a == b }
-	}
-	for _, f := range files {
-		m, err := searchFile(pattern, f, fn)
+	for i, path := range filePaths {
+		if i >= 1 && !opts.multipleFiles {
+			opts.multipleFiles = true
+		}
+		m, err := searchFile(pattern, path, opts)
 		if err != nil {
 			continue
 		}
-		matched = append(matched, m...)
+		results = append(results, m...)
 	}
-	r := []string{}
-	for _, m := range matched {
-		r = append(r, m.text)
-	}
-	return r
+	return results.format(opts)
 }
 
-func searchFile(pattern string, path string, fn matchFn) ([]match, error) {
+func searchFile(pattern string, path string, opts options) ([]searchResult, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	bf := bufio.NewReader(f)
+	reader := bufio.NewReader(f)
 
-	m := []match{}
+	if opts.wholeLine {
+		pattern = fmt.Sprintf("^%v$", pattern)
+	}
+	if opts.ignoreCase {
+		pattern = fmt.Sprintf("(?i)%v", strings.ToLower(pattern))
+	}
+	reg, err := regexp.Compile(pattern)
+	if err != nil {
+		return nil, err
+	}
+	results := searchResults{}
 	ln := 0
 	for {
-		l, err := bf.ReadString('\n')
+		ln++
+		line, err := reader.ReadString('\n')
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return nil, err
 		}
-		if fn(l, pattern) {
-			m = append(m, match{text: strings.TrimSuffix(l, "\n"), lineNum: ln, fileName: path})
+		line = strings.TrimSuffix(line, "\n")
+		if reg.MatchString(line) != opts.invert {
+			results = append(results, searchResult{text: line, lineNum: ln, fileName: path})
+			if opts.fileNames {
+				break
+			}
 		}
-		ln++
 	}
-	return m, nil
+	return results, nil
 }
 
-func parseOptions(flags []string) map[string]bool {
-	o := make(map[string]bool)
+func (g *grep) parseOptions(flags []string) {
 	for _, v := range flags {
 		switch v {
-		case "-n":
-			o["n"] = true
 		case "-l":
-			o["l"] = true
+			// g.opts.fileNames
+			g.opts.fileNames = true
+		case "-n":
+			g.opts.lineNumbers = true
 		case "-i":
-			o["i"] = true
+			g.opts.ignoreCase = true
 		case "-v":
-			o["v"] = true
+			g.opts.invert = true
 		case "-x":
-			o["x"] = true
+			g.opts.wholeLine = true
+		}
+	}
+}
+func parseOptions(flags []string) options {
+	o := options{}
+	for _, v := range flags {
+		switch v {
+		case "-l":
+			o.fileNames = true
+		case "-n":
+			o.lineNumbers = true
+		case "-i":
+			o.ignoreCase = true
+		case "-v":
+			o.invert = true
+		case "-x":
+			o.wholeLine = true
 		}
 	}
 	return o
 }
 
-// func formatResullts(matches []match, flags []string) []string {
-// 	var fN, fL, fI, fV, fX bool
-// 	for _, fl := range flags {
-// 		if fl == "-n" {
-// 			fN = true
-// 			continue
-// 		}
-// 		if fl == "-l" {
-// 			fL = true
-// 			continue
-// 		}
-// 		if fl == "-l" {
-// 			fL = true
-// 			continue
-// 		}
-// 		if fl == "-i" {
-// 			fI = true
-// 			continue
-// 		}
-// 		if fl == "-x" {
-// 			fX = true
-// 			continue
-// 		}
-// 	}
-// 	templ := "%v"
-// 	if fN {
-// 		templ = "%v:%v"
-// 	}
-// }
+func (sr *searchResults) format(opts options) []string {
+	r := []string{}
+	c := ""
+	for _, m := range *sr {
+		if opts.fileNames {
+			r = append(r, m.fileName)
+			continue
+		}
+		c = m.text
+		if opts.lineNumbers {
+			c = fmt.Sprintf("%v:%s", m.lineNum, c)
+		}
+		if opts.multipleFiles {
+			c = fmt.Sprintf("%s:%s", m.fileName, c)
+		}
+		r = append(r, c)
+	}
+	return r
+}
