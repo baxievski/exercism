@@ -16,6 +16,7 @@ type searchResult struct {
 }
 
 type searchResults []searchResult
+
 type options struct {
 	ignoreCase    bool
 	invert        bool
@@ -30,42 +31,41 @@ type grep struct {
 	results []searchResult
 }
 
+// Search for lines in files matching a regular expression
 func Search(pattern string, flags []string, filePaths []string) []string {
-	// g := grep{}
-	results := searchResults{}
-	opts := parseOptions(flags)
+	g := grep{}
+	g.parseOptions(flags)
 	for i, path := range filePaths {
-		if i >= 1 && !opts.multipleFiles {
-			opts.multipleFiles = true
+		if i >= 1 && !g.opts.multipleFiles {
+			g.opts.multipleFiles = true
 		}
-		m, err := searchFile(pattern, path, opts)
-		if err != nil {
+		if g.searchFile(pattern, path) != nil {
 			continue
 		}
-		results = append(results, m...)
 	}
-	return results.format(opts)
+	return g.print()
 }
 
-func searchFile(pattern string, path string, opts options) ([]searchResult, error) {
+func (g *grep) searchFile(pattern string, path string) error {
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer f.Close()
-	reader := bufio.NewReader(f)
 
-	if opts.wholeLine {
+	if g.opts.wholeLine {
 		pattern = fmt.Sprintf("^%v$", pattern)
 	}
-	if opts.ignoreCase {
-		pattern = fmt.Sprintf("(?i)%v", strings.ToLower(pattern))
+	if g.opts.ignoreCase {
+		pattern = fmt.Sprintf("(?i)%v", pattern)
 	}
+
 	reg, err := regexp.Compile(pattern)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	results := searchResults{}
+
+	reader := bufio.NewReader(f)
 	ln := 0
 	for {
 		ln++
@@ -74,24 +74,27 @@ func searchFile(pattern string, path string, opts options) ([]searchResult, erro
 			break
 		}
 		if err != nil {
-			return nil, err
+			return err
 		}
 		line = strings.TrimSuffix(line, "\n")
-		if reg.MatchString(line) != opts.invert {
-			results = append(results, searchResult{text: line, lineNum: ln, fileName: path})
-			if opts.fileNames {
+		if reg.MatchString(line) != g.opts.invert {
+			g.addResult(line, ln, path)
+			if g.opts.fileNames {
 				break
 			}
 		}
 	}
-	return results, nil
+	return nil
+}
+
+func (g *grep) addResult(text string, lineNum int, fileName string) {
+	g.results = append(g.results, searchResult{text: text, lineNum: lineNum, fileName: fileName})
 }
 
 func (g *grep) parseOptions(flags []string) {
 	for _, v := range flags {
 		switch v {
 		case "-l":
-			// g.opts.fileNames
 			g.opts.fileNames = true
 		case "-n":
 			g.opts.lineNumbers = true
@@ -104,41 +107,23 @@ func (g *grep) parseOptions(flags []string) {
 		}
 	}
 }
-func parseOptions(flags []string) options {
-	o := options{}
-	for _, v := range flags {
-		switch v {
-		case "-l":
-			o.fileNames = true
-		case "-n":
-			o.lineNumbers = true
-		case "-i":
-			o.ignoreCase = true
-		case "-v":
-			o.invert = true
-		case "-x":
-			o.wholeLine = true
-		}
-	}
-	return o
-}
 
-func (sr *searchResults) format(opts options) []string {
-	r := []string{}
-	c := ""
-	for _, m := range *sr {
-		if opts.fileNames {
-			r = append(r, m.fileName)
+func (g *grep) print() []string {
+	out := []string{}
+	tx := ""
+	for _, m := range g.results {
+		if g.opts.fileNames {
+			out = append(out, m.fileName)
 			continue
 		}
-		c = m.text
-		if opts.lineNumbers {
-			c = fmt.Sprintf("%v:%s", m.lineNum, c)
+		tx = m.text
+		if g.opts.lineNumbers {
+			tx = fmt.Sprintf("%v:%s", m.lineNum, tx)
 		}
-		if opts.multipleFiles {
-			c = fmt.Sprintf("%s:%s", m.fileName, c)
+		if g.opts.multipleFiles {
+			tx = fmt.Sprintf("%s:%s", m.fileName, tx)
 		}
-		r = append(r, c)
+		out = append(out, tx)
 	}
-	return r
+	return out
 }
