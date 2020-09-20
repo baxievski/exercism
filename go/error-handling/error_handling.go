@@ -1,16 +1,17 @@
 // Package erratum implements a solution for the exercism error-handling challenge
 package erratum
 
+import "fmt"
+
 // Use opens a resource, retries on transient errors, takes care to always close the resource
 func Use(o ResourceOpener, s string) (err error) {
 	res, err := o()
 	for err != nil {
-		switch err.(type) {
-		case TransientError:
+		if _, ok := err.(TransientError); ok {
 			res, err = o()
-		default:
-			return err
+			continue
 		}
+		return err
 	}
 	defer res.Close()
 
@@ -23,7 +24,7 @@ func Use(o ResourceOpener, s string) (err error) {
 			case error:
 				err = e
 			default:
-				break
+				err = fmt.Errorf("%v", r)
 			}
 		}
 	}()
