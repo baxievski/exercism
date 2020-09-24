@@ -1,0 +1,229 @@
+{
+    "folders": [
+        {
+            "name": "go core: Hello World",
+            "path": "go/hello-world"
+        },
+        {
+            "name": "go core: Two Fer",
+            "path": "go/two-fer"
+        },
+        {
+            "name": "go core: Hamming",
+            "path": "go/hamming"
+        },
+        {
+            "name": "go core: Raindrops",
+            "path": "go/raindrops"
+        },
+        {
+            "name": "go core: Scrabble Score",
+            "path": "go/scrabble-score"
+        },
+        {
+            "name": "go core: Isogram",
+            "path": "go/isogram"
+        },
+        {
+            "name": "go core: Difference of Squares",
+            "path": "go/difference-of-squares"
+        },
+        {
+            "name": "go core: Luhn",
+            "path": "go/luhn"
+        },
+        {
+            "name": "go core: Grains",
+            "path": "go/grains"
+        },
+        {
+            "name": "go core: Clock",
+            "path": "go/clock"
+        },
+        {
+            "name": "go core: Parallel Letter Frequency",
+            "path": "go/parallel-letter-frequency"
+        },
+        {
+            "name": "go core: Tree Building",
+            "path": "go/tree-building"
+        },
+        {
+            "name": "go core: Robot Name",
+            "path": "go/robot-name"
+        },
+        {
+            "name": "go core: Tournament",
+            "path": "go/tournament"
+        },
+        {
+            "name": "go core: Twelve Days",
+            "path": "go/twelve-days"
+        },
+        {
+            "name": "go core: Matrix",
+            "path": "go/matrix"
+        },
+        {
+            "name": "go core: Error Handling",
+            "path": "go/error-handling"
+        },
+        {
+            "name": "go core: Bank Account",
+            "path": "go/bank-account"
+        },
+        {
+            "name": "go/accumulate",
+            "path": "go/accumulate"
+        },
+        {
+            "name": "go/acronym",
+            "path": "go/acronym"
+        },
+        {
+            "name": "go/anagram",
+            "path": "go/anagram"
+        },
+        {
+            "name": "go/binary-search",
+            "path": "go/binary-search"
+        },
+        {
+            "name": "go/binary-search-tree",
+            "path": "go/binary-search-tree"
+        },
+        {
+            "name": "go/bob",
+            "path": "go/bob"
+        },
+        {
+            "name": "go/collatz-conjecture",
+            "path": "go/collatz-conjecture"
+        },
+        {
+            "name": "go/darts",
+            "path": "go/darts"
+        },
+        {
+            "name": "go/etl",
+            "path": "go/etl"
+        },
+        {
+            "name": "go/flatten-array",
+            "path": "go/flatten-array"
+        },
+        {
+            "name": "go/gigasecond",
+            "path": "go/gigasecond"
+        },
+        {
+            "name": "go/grep",
+            "path": "go/grep"
+        },
+        {
+            "name": "go/leap",
+            "path": "go/leap"
+        },
+        {
+            "name": "go/ledger",
+            "path": "go/ledger"
+        },
+        {
+            "name": "go/linked-list",
+            "path": "go/linked-list"
+        },
+        {
+            "name": "go/list-ops",
+            "path": "go/list-ops"
+        },
+        {
+            "name": "go/matching-brackets",
+            "path": "go/matching-brackets"
+        },
+        {
+            "name": "go/nucleotide-count",
+            "path": "go/nucleotide-count"
+        },
+        {
+            "name": "go/pangram",
+            "path": "go/pangram"
+        },
+        {
+            "name": "go/proverb",
+            "path": "go/proverb"
+        },
+        {
+            "name": "go/reverse-string",
+            "path": "go/reverse-string"
+        },
+        {
+            "name": "go/rna-transcription",
+            "path": "go/rna-transcription"
+        },
+        {
+            "name": "go/run-length-encoding",
+            "path": "go/run-length-encoding"
+        },
+        {
+            "name": "go/secret-handshake",
+            "path": "go/secret-handshake"
+        },
+        {
+            "name": "go/space-age",
+            "path": "go/space-age"
+        },
+        {
+            "name": "go/sublist",
+            "path": "go/sublist"
+        },
+        {
+            "name": "go/transpose",
+            "path": "go/transpose"
+        },
+        {
+            "name": "go/triangle",
+            "path": "go/triangle"
+        },
+        {
+            "name": "go/two-bucket",
+            "path": "go/two-bucket"
+        },
+        {
+            "name": "go/word-count",
+            "path": "go/word-count"
+        },
+        {
+            "name": "python solutions",
+            "path": "python"
+        },
+    ],
+    "settings": {},
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Test Current File",
+                "type": "go",
+                "request": "launch",
+                "mode": "test",
+                "remotePath": "",
+                "port": 2345,
+                "host": "127.0.0.1",
+                "program": "${file}",
+                "env": {},
+                "args": [],
+                "showLog": true
+            },
+            {
+                "name": "Launch",
+                "type": "go",
+                "request": "launch",
+                "mode": "auto",
+                "program": "${fileDirname}",
+                "env": {},
+                "args": []
+            }
+        ]
+    },
+
+}
