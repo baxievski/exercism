@@ -4,9 +4,9 @@ import "sync"
 
 // Account represents a bank account
 type Account struct {
+	sync.RWMutex
 	balance int64
 	closed  bool
-	mux     sync.Mutex
 }
 
 // Open creates an account with an initial deposit
@@ -19,8 +19,8 @@ func Open(initialDeposit int64) *Account {
 
 // Close closes the account
 func (a *Account) Close() (int64, bool) {
-	a.mux.Lock()
-	defer a.mux.Unlock()
+	a.Lock()
+	defer a.Unlock()
 
 	if a.closed {
 		return 0, false
@@ -34,8 +34,8 @@ func (a *Account) Close() (int64, bool) {
 
 // Balance gives the current balance of the account
 func (a *Account) Balance() (int64, bool) {
-	a.mux.Lock()
-	defer a.mux.Unlock()
+	a.RLock()
+	defer a.RUnlock()
 
 	if a.closed {
 		return 0, false
@@ -46,8 +46,8 @@ func (a *Account) Balance() (int64, bool) {
 
 // Deposit adds/removes ammount from the account
 func (a *Account) Deposit(amount int64) (int64, bool) {
-	a.mux.Lock()
-	defer a.mux.Unlock()
+	a.Lock()
+	defer a.Unlock()
 
 	if a.closed {
 		return 0, false
