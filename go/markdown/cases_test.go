@@ -47,9 +47,19 @@ var testCases = []struct {
 		expected:    "<h6>This will be an h6</h6>",
 	},
 	{
+		description: "with symbols in header",
+		input:       "This is a paragraph with # and * in the text",
+		expected:    "<p>This is a paragraph with # and * in the text</p>",
+	},
+	{
 		description: "unordered lists",
 		input:       "* Item 1\n* Item 2",
 		expected:    "<ul><li>Item 1</li><li>Item 2</li></ul>",
+	},
+	{
+		description: "multiple unordered lists",
+		input:       "# Header\n* Item 1\n* Item 2\n## Header 2\n* Item A\n * Item B",
+		expected:    "<h1>Header</h1><ul><li>Item 1</li><li>Item 2</li></ul><h2>Header 2</h2><ul><li>Item A</li><li>Item B</li></ul>",
 	},
 	{
 		description: "With a little bit of everything",

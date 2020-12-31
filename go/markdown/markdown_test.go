@@ -5,7 +5,7 @@ import "testing"
 func TestMarkdown(t *testing.T) {
 	for _, test := range testCases {
 		if html := Render(test.input); html != test.expected {
-			t.Fatalf("FAIL: Render(%q) = %q, want %q.", test.input, html, test.expected)
+			t.Fatalf("FAIL: Render(%q) = \n%q, want \n%q.", test.input, html, test.expected)
 		}
 		t.Logf("PASS: %s\n", test.description)
 	}
