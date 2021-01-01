@@ -10,7 +10,6 @@ type SearchTreeData struct {
 // Bst generates a binary search tree node
 func Bst(d int) *SearchTreeData {
 	return &SearchTreeData{data: d}
-
 }
 
 // Insert puts a new node in the binary search tree
