@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// IsValidISBN validates a string that represents an isbn number
 func IsValidISBN(n string) bool {
 	isbn := strings.ReplaceAll(n, "-", "")
 	if len(isbn) != 10 {
