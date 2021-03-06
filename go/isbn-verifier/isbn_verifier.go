@@ -6,14 +6,14 @@ import (
 )
 
 // IsValidISBN validates a string that represents an isbn number
-func IsValidISBN(n string) bool {
-	isbn := strings.ReplaceAll(n, "-", "")
-	if len(isbn) != 10 {
+func IsValidISBN(isbn string) bool {
+	n := strings.ReplaceAll(isbn, "-", "")
+	if len(n) != 10 {
 		return false
 	}
 
 	sum := 0
-	for i, c := range isbn {
+	for i, c := range n {
 		d, err := strconv.Atoi(string(c))
 		if err != nil {
 			if i != 9 {
