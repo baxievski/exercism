@@ -193,6 +193,62 @@
             "path": "go/word-count"
         },
         {
+            "name": "go/custom-set",
+            "path": "go/custom-set"
+        },
+        {
+            "name": "go/sum-of-multiples",
+            "path": "go/sum-of-multiples"
+        },
+        {
+            "name": "go/markdown",
+            "path": "go/markdown"
+        },
+        {
+            "name": "go/sieve",
+            "path": "go/sieve"
+        },
+        {
+            "name": "go/circular-buffer",
+            "path": "go/circular-buffer"
+        },
+        {
+            "name": "go/protein-translation",
+            "path": "go/protein-translation"
+        },
+        {
+            "name": "go/strain",
+            "path": "go/strain"
+        },
+        {
+            "name": "go/pythagorean-triplet",
+            "path": "go/pythagorean-triplet"
+        },
+        {
+            "name": "go/isbn-verifier",
+            "path": "go/isbn-verifier"
+        },
+        {
+            "name": "go/nth-prime",
+            "path": "go/nth-prime"
+        },
+        {
+            "name": "go/largest-series-product",
+            "path": "go/largest-series-product"
+        },
+        {
+            "name": "go/perfect-numbers",
+            "path": "go/perfect-numbers"
+        },
+        {
+            "name": "go/allergies",
+            "path": "go/allergies"
+        },
+        {
+            "name": "go/series",
+            "path": "go/series"
+        },
+        {
             "name": "python solutions",
             "path": "python"
         },
